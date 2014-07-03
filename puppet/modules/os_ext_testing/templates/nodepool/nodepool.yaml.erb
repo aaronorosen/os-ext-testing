@@ -16,6 +16,11 @@ gearman-servers:
 labels:
   - name: d-p-c
     image: d-p-c
+    min-ready: 0
+    providers:
+      - name: local_01
+  - name: basic
+    image: basic
     min-ready: 1
     providers:
       - name: local_01
@@ -37,6 +42,14 @@ providers:
         min-ram: 8192
 #        setup: prepare_node_devstack.sh
         setup: prepare_node_devstack_http_proxy.sh
+        #Set the public key part only of the jenkin's key (no whitespace) to the NODEPOOL_SSH_KEY environment variable in order to
+        #inject it into the image's jenkins user .ssh/authorized_keys
+        #This key will be used to log in and setup jenkins on the target VM
+        private-key: '/home/nodepool/.ssh/id_rsa'
+      - name: basic
+        base-image: 'Ubuntu 12.04 Server (Precise)'
+        min-ram: 8192
+        setup: prepare_node_basic_http_proxy.sh
         #Set the public key part only of the jenkin's key (no whitespace) to the NODEPOOL_SSH_KEY environment variable in order to
         #inject it into the image's jenkins user .ssh/authorized_keys
         #This key will be used to log in and setup jenkins on the target VM

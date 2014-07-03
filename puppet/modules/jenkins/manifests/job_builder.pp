@@ -38,10 +38,12 @@ class jenkins::job_builder (
     ensure => directory,
   }
 
+# TODO: why root user?
   exec { 'jenkins_jobs_update':
     command     => 'jenkins-jobs update /etc/jenkins_jobs/config',
     path        => '/bin:/usr/bin:/usr/local/bin',
     refreshonly => true,
+    user        => 'root',
     require     => [
       File['/etc/jenkins_jobs/jenkins_jobs.ini'],
       Package['python-jenkins'],
