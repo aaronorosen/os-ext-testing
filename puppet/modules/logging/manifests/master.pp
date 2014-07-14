@@ -2,10 +2,35 @@
 # This will provide a persistent location where all logs from the
 # last 30 days can be accessed.
 
-class logging::master($user = '', $group = '') {
+class logging::master($domain = 'mydomain.com') {
+
+  class { 'openstack_project::server':
+    iptables_public_tcp_ports => [22, 80, 443],
+    sysadmins                 => $sysadmins,
+  }
+
+  include openstack_project
+  class { 'jenkins::jenkinsuser':
+    ssh_key => $openstack_project::jenkins_ssh_key,
+  }
+
   include apache
 
-  apache::vhost { 'logs.csim.com':
+  a2mod { 'rewrite':
+    ensure => present,
+  }
+  a2mod { 'proxy':
+    ensure => present,
+  }
+  a2mod { 'proxy_http':
+    ensure => present,
+  }
+
+  file { '/srv/static':
+    ensure => directory,
+  }
+
+  apache::vhost { "logs.$domain":
     port     => 80,
     priority => '50',
     docroot  => '/srv/static/logs',
@@ -13,14 +38,19 @@ class logging::master($user = '', $group = '') {
     template => 'logging/logs.vhost.erb',
   }
 
-  file { '/srv/static':
-    ensure => directory,
+  apache::vhost { "logs-dev.$domain":
+    port     => 80,
+    priority => '51',
+    docroot  => '/srv/static/logs',
+    require  => File['/srv/static/logs'],
+    template => 'openstack_project/logs-dev.vhost.erb',
   }
-  
+
   file { '/srv/static/logs':
     ensure  => directory,
-    owner   => $user,
-    group   => $group,
+    owner   => 'jenkins',
+    group   => 'jenkins',
+    require => User['jenkins'],
   }
 
   file { '/srv/static/logs/robots.txt':
@@ -28,7 +58,7 @@ class logging::master($user = '', $group = '') {
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    source  => 'puppet:///modules/logging/disallow_robots.txt',
+    source  => 'puppet:///modules/openstack_project/disallow_robots.txt',
     require => File['/srv/static/logs'],
   }
 
@@ -40,7 +70,7 @@ class logging::master($user = '', $group = '') {
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    source  => 'puppet:///modules/logging/logs/help',
+    source  => 'puppet:///modules/openstack_project/logs/help',
     require => File['/srv/static/logs'],
   }
 

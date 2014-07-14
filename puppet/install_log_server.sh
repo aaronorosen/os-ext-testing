@@ -30,7 +30,6 @@ if [[ "$PULL_LATEST_OSEXT_REPO" == "1" ]]; then
     cd $OSEXT_PATH; git checkout master && sudo git pull; cd $THIS_DIR
 fi
 
-CLASS_ARGS="user => '$USER', "
-CLASS_ARGS="$CLASS_ARGS group => '$USER',"
+CLASS_ARGS="vhost => 'logs.csim.com', "
 
 sudo puppet apply --verbose $PUPPET_MODULE_PATH -e "class {'logging::master': $CLASS_ARGS }"
