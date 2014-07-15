@@ -33,6 +33,6 @@ fi
 JENKINS_SSH_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCZBfq9HkS9urOg2lRkv+9B3tKDLu9h3QRd43aoMXQLXmivurnGEeVf1mptpWGeMB6E89XC/+xsMM3MxAlTQAuaTEhQ0aZjYpdawToYaj92BvoQRNShvQOOTIeehcZwJzudXu1WLXlv1+0gJIwPswkVqfnn5ptXePh3qhb2jFaZUQ=="
 
 CLASS_ARGS="domain => 'csim.hp.com', "
-CLASS_ARGS="$CLASS_ARGS jenkins_ssh_key => $JENKINS_SSH_KEY, "
+CLASS_ARGS="$CLASS_ARGS jenkins_ssh_key => '$JENKINS_SSH_KEY', "
 
 sudo puppet apply --verbose $PUPPET_MODULE_PATH -e "class {'logging::master': $CLASS_ARGS }"
