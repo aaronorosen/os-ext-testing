@@ -2,8 +2,17 @@
 # This will provide a persistent location where all logs from the
 # last 30 days can be accessed.
 
-class logging::master($domain = 'mydomain.com',
-                      $jenkins_ssh_key) {
+class logging::master(
+  $domain = 'mydomain.com',
+  $jenkins_ssh_key,
+  $sysadmins = [],
+  $swift_authurl = '',
+  $swift_user = '',
+  $swift_key = '',
+  $swift_tenant_name = '',
+  $swift_region_name = '',
+  $swift_default_container = '',
+) {
 
   class { 'openstack_project::server':
     iptables_public_tcp_ports => [22, 80, 443],
@@ -62,6 +71,38 @@ class logging::master($domain = 'mydomain.com',
     mode    => '0444',
     source  => 'puppet:///modules/openstack_project/disallow_robots.txt',
     require => File['/srv/static/logs'],
+  }
+
+  vcsrepo { '/opt/os-loganalyze':
+    ensure   => latest,
+    provider => git,
+    revision => 'master',
+    source   => 'https://git.openstack.org/openstack-infra/os-loganalyze',
+  }
+
+  exec { 'install_os-loganalyze':
+    command     => 'python setup.py install',
+    cwd         => '/opt/os-loganalyze',
+    path        => '/bin:/usr/bin',
+    refreshonly => true,
+    subscribe   => Vcsrepo['/opt/os-loganalyze'],
+  }
+
+  file { '/etc/os_loganalyze':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => Vcsrepo['/opt/os-loganalyze'],
+  }
+
+  file { '/etc/os_loganalyze/wsgi.conf':
+    ensure  => present,
+    owner   => 'root',
+    group   => 'www-data',
+    mode    => '0440',
+    content => template('openstack_project/os-loganalyze-wsgi.conf.erb'),
+    require => File['/etc/os_loganalyze'],
   }
 
   file { '/srv/static/logs/help':

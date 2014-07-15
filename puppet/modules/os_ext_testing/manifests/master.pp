@@ -39,6 +39,8 @@ class os_ext_testing::master (
   # which is the private key used by the jenkins master to log into the jenkins
   # slave node to install and register the node as a jenkins slave
   $jenkins_credentials_id = 'abcdef-0123-4567-89abcdef0123',
+  $static_url_root= '10.50.132.35',
+  $log_url_root = '10.50.132.35',
   $http_proxy = '',
   $https_proxy = '',
   $no_proxy = '',
@@ -145,6 +147,13 @@ class os_ext_testing::master (
   jenkins::plugin { 'rebuild':
     version => '1.14',
   }
+  #TODO: When version 1.9 is release, uncomment.
+  #Until then, see instructions here:
+  #http://lists.openstack.org/pipermail/openstack-infra/2013-December/000568.html
+  #Or use 1.8 which doesn't have all the features
+  #jenkins::plugin { 'scp':
+  #  version => '1.8',
+  #}
   jenkins::plugin { 'simple-theme-plugin':
     version => '0.2',
   }
@@ -376,5 +385,15 @@ class os_ext_testing::master (
       mode   => '0644',
       content => template('os_ext_testing/jenkins/credentials.xml.erb'),
   }
+
+  file {"/var/lib/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml":
+      ensure => present,
+      owner  => 'jenkins',
+      group  => 'jenkins',
+      mode   => '0644',
+      content => template('os_ext_testing/jenkins/be.certipost.hudson.plugin.SCPRepositoryPublisher.xml.erb'),
+  }
+
+
 }
 
