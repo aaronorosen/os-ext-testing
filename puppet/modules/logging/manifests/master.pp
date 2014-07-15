@@ -15,6 +15,7 @@ class logging::master($domain = 'mydomain.com') {
   }
 
   include apache
+  include apache::mod::wsgi
 
   a2mod { 'rewrite':
     ensure => present,
@@ -35,7 +36,7 @@ class logging::master($domain = 'mydomain.com') {
     priority => '50',
     docroot  => '/srv/static/logs',
     require  => File['/srv/static/logs'],
-    template => 'logging/logs.vhost.erb',
+    template => 'openstack_project/logs.vhost.erb',
   }
 
   apache::vhost { "logs-dev.$domain":
