@@ -35,7 +35,7 @@ if [[ "$PULL_LATEST_OSEXT_REPO" == "1" ]]; then
 fi
 
 if [[ ! -e $DATA_PATH ]]; then
-    echo "Enter the URI for the location of your config data repository. Example: https://github.com/jaypipes/os-ext-testing-data"
+    echo "Enter the URI for the location of your config data repository. Example: https://github.com/rasselin/os-ext-testing-data"
     read data_repo_uri
     if [[ "$data_repo_uri" == "" ]]; then
         echo "Data repository is required to proceed. Exiting."
@@ -130,6 +130,8 @@ if [[ -n $UPSTREAM_GERRIT_BASEURL ]]; then
 fi
 CLASS_ARGS="$CLASS_ARGS git_email => '$GIT_EMAIL', git_name => '$GIT_NAME', "
 CLASS_ARGS="$CLASS_ARGS publish_host => '$PUBLISH_HOST', "
+CLASS_ARGS="$CLASS_ARGS static_url_root => '$STATIC_URL_ROOT', "
+CLASS_ARGS="$CLASS_ARGS log_url_root => '$LOG_URL_ROOT', "
 CLASS_ARGS="$CLASS_ARGS data_repo_dir => '$DATA_PATH', "
 CLASS_ARGS="$CLASS_ARGS url_pattern => '$URL_PATTERN', "
 CLASS_ARGS="$CLASS_ARGS mysql_root_password => '$MYSQL_ROOT_PASSWORD', "
