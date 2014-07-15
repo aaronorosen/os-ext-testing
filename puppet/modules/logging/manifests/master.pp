@@ -2,7 +2,8 @@
 # This will provide a persistent location where all logs from the
 # last 30 days can be accessed.
 
-class logging::master($domain = 'mydomain.com') {
+class logging::master($domain = 'mydomain.com',
+                      $jenkins_ssh_key = $openstack_project::jenkins_ssh_key) {
 
   class { 'openstack_project::server':
     iptables_public_tcp_ports => [22, 80, 443],
@@ -11,7 +12,7 @@ class logging::master($domain = 'mydomain.com') {
 
   include openstack_project
   class { 'jenkins::jenkinsuser':
-    ssh_key => $openstack_project::jenkins_ssh_key,
+    ssh_key => $jenkins_ssh_key,
   }
 
   include apache
