@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<be.certipost.hudson.plugin.SCPRepositoryPublisher_-DescriptorImpl plugin="scp@1.8">
+<be.certipost.hudson.plugin.SCPRepositoryPublisher_-DescriptorImpl plugin="scp@1.9-SNAPSHOT">
   <sites>
     <be.certipost.hudson.plugin.SCPSite>
-      <hostname><%= static_url_root %></hostname>
+      <displayname>LogServer</displayname>
+      <hostname><%= log_url_root %></hostname>
       <port>22</port>
       <username>jenkins</username>
       <password></password>

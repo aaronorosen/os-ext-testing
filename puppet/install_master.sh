@@ -130,7 +130,6 @@ if [[ -n $UPSTREAM_GERRIT_BASEURL ]]; then
 fi
 CLASS_ARGS="$CLASS_ARGS git_email => '$GIT_EMAIL', git_name => '$GIT_NAME', "
 CLASS_ARGS="$CLASS_ARGS publish_host => '$PUBLISH_HOST', "
-CLASS_ARGS="$CLASS_ARGS static_url_root => '$STATIC_URL_ROOT', "
 CLASS_ARGS="$CLASS_ARGS log_url_root => '$LOG_URL_ROOT', "
 CLASS_ARGS="$CLASS_ARGS data_repo_dir => '$DATA_PATH', "
 CLASS_ARGS="$CLASS_ARGS url_pattern => '$URL_PATTERN', "

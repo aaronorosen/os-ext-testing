@@ -39,7 +39,6 @@ class os_ext_testing::master (
   # which is the private key used by the jenkins master to log into the jenkins
   # slave node to install and register the node as a jenkins slave
   $jenkins_credentials_id = 'abcdef-0123-4567-89abcdef0123',
-  $static_url_root= '10.50.132.35',
   $log_url_root = '10.50.132.35',
   $http_proxy = '',
   $https_proxy = '',

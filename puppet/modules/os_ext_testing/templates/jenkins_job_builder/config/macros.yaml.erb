@@ -80,7 +80,7 @@
     name: console-log
     publishers:
       - scp:
-          site: '<%= @static_url_root %>'
+          site: 'LogServer'
           files:
             - target: 'logs/$LOG_PATH'
               copy-console: true
@@ -90,7 +90,7 @@
     name: devstack-logs
     publishers:
       - scp:
-          site: '<%= @static_url_root %>'
+          site: 'LogServer'
           files:
             - target: 'logs/$LOG_PATH'
               source: 'logs/**'
