@@ -51,7 +51,7 @@ fi
 # Pulling in variables from data repository
 . $DATA_PATH/vars.sh
 
-CLASS_ARGS="ssh_key => '$JENKINS_SSH_PUBLIC_KEY_NO_WHITESPACE',
+CLASS_ARGS="ssh_key => '$JENKINS_SSH_PUBLIC_KEY_NO_WHITESPACE', "
 sudo puppet apply --verbose $PUPPET_MODULE_PATH -e "class {'os_ext_testing::devstack_slave': $CLASS_ARGS }"
 
 if [[ ! -e /opt/git ]]; then
