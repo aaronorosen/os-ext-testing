@@ -1,24 +1,50 @@
 # A Jenkins slave that will execute jobs that use devstack
 # to set up a full OpenStack environment for test runs.
-
+# Ref: # == Class: openstack_project::slave
 class os_ext_testing::devstack_slave (
-  $bare = true,
+  $thin = false,
   $certname = $::fqdn,
   $ssh_key = '',
+  $sysadmins = [],
   $python3 = false,
   $include_pypy = false,
 ) {
   include os_ext_testing::base
-  include openstack_project::tmpcleanup
+  #TODO: Is including this an issue?
+  #include devstack_host
   include openstack_project
+  include openstack_project::automatic_upgrades
+  include openstack_project::tmpcleanup
+
+  #class { 'openstack_project::server':
+  #  iptables_public_tcp_ports => [],
+  #  certname                  => $certname,
+  #  sysadmins                 => $sysadmins,
+  #}
+
   class { 'jenkins::slave':
-    bare         => $bare,
     ssh_key      => $ssh_key,
     python3      => $python3,
+  }
+
+  include jenkins::cgroups
+  include ulimit
+  ulimit::conf { 'limit_jenkins_procs':
+    limit_domain => 'jenkins',
+    limit_type   => 'hard',
+    limit_item   => 'nproc',
+    limit_value  => '256'
+  }
+
+  class { 'openstack_project::slave_common':
     include_pypy => $include_pypy,
   }
-  include devstack_host
 
+  if (! $thin) {
+    include openstack_project::thick_slave
+  }
+
+  #TODO: Are these needed? They're not need in upstream's.
   file { '/home/jenkins/cache/':
     ensure  => directory,
     owner   => 'jenkins',
@@ -30,15 +56,6 @@ class os_ext_testing::devstack_slave (
     owner   => 'jenkins',
     group   => 'jenkins',
     require => file['/home/jenkins/cache/'],
-  }
-
-  file { '/srv/static/logs/robots.txt':
-    ensure  => present,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0444',
-    source  => 'puppet:///modules/openstack_project/disallow_robots.txt',
-    require => File['/srv/static/logs'],
   }
 
 }
