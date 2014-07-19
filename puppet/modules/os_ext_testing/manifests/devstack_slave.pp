@@ -44,6 +44,11 @@ class os_ext_testing::devstack_slave (
     include openstack_project::thick_slave
   }
 
+  #Not sure why this is not added by upstream
+  package { 'python-yaml':
+    ensure => installed
+  }
+
   #TODO: Are these needed? They're not need in upstream's.
   file { '/home/jenkins/cache/':
     ensure  => directory,
