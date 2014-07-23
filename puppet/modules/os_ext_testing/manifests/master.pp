@@ -54,6 +54,12 @@ class os_ext_testing::master (
     require  => Class['pip'],
   }
 
+  package { 'gitpython':
+    ensure   => present,
+    provider => pip,
+    require  => Class['pip'],
+  }
+
 
   # Note that we need to do this here, once instead of in the jenkins::master
   # module because zuul also defines these resource blocks and Puppet barfs.
