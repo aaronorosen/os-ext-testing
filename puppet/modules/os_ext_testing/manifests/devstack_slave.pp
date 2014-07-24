@@ -63,4 +63,11 @@ class os_ext_testing::devstack_slave (
     require => file['/home/jenkins/cache/'],
   }
 
+  file { '/etc/sudoers.d/50_jenkins_sudo':
+      ensure => present,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0440',
+      source => 'puppet:///modules/os_ext_testing/sudoers/50_jenkins_sudo',
+  }
 }
